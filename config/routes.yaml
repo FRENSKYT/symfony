@@ -1,0 +1,47 @@
+controllers:
+    resource:
+        path: ../src/Controller/
+        namespace: App\Controller
+    type: attribute
+    
+blog_list:
+    path: /blog
+    # the controller value has the format 'controller_class::method_name'
+    controller: App\Controller\BlogController::list
+    requirements:
+        page: '\d+'
+
+    # if the action is implemented as the __invoke() method of the
+    # controller class, you can skip the '::method_name' part:
+    # controller: App\Controller\BlogController
+api_post_show:
+    path:       /api/posts/{id}
+    controller: App\Controller\BlogApiController::show
+    methods:    GET|HEAD
+
+api_post_edit:
+    path:       /api/posts/{id}
+    controller: App\Controller\BlogApiController::edit
+    methods:    PUT
+
+contact:
+    path:       /contact
+    controller: 'App\Controller\DefaultController::contact'
+    condition:  "context.getMethod() in ['GET', 'HEAD'] and request.headers.get('User-Agent') matches '/firefox/i'"
+    # expressions can also include configuration parameters:
+    # condition: "request.headers.get('User-Agent') matches '%app.allowed_browsers%'"
+    # expressions can even use environment variables:
+    # condition: "context.getHost() == env('APP_MAIN_HOST')"
+
+post_show:
+    path:       /posts/{id}
+    controller: 'App\Controller\DefaultController::showPost'
+    # expressions can retrieve route parameter values using the "params" variable
+    condition:  "params['id'] < 1000"
+
+blog_index:
+    path:       /blog/{page}
+    controller: App\Controller\BlogController::index
+    defaults:
+        page: 1
+        title: "Hello world!"
